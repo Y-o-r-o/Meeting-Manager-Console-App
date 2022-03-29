@@ -19,14 +19,14 @@ public class App
     private bool appIsRuning = false;
 
     private UserManager userManager;
-    private Serializer<Meeting> meetingsSerializer;
+    private Serializer<List<Meeting>> meetingsSerializer;
     private List<Meeting> meetings;
 
     public App()
     {
         userManager = new UserManager();
         meetings = new List<Meeting>();
-        meetingsSerializer = new Serializer<Meeting>();
+        meetingsSerializer = new Serializer<List<Meeting>>("meetings");
     }
 
     public void run()

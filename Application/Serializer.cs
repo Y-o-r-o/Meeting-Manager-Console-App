@@ -7,31 +7,31 @@ public class Serializer<T>
 {
     private string _fileName;
 
-    public Serializer()
+    public Serializer(string filename)
     {
-        _fileName = typeof(T).ToString();
+        _fileName = filename;
     }
 
-    public void serialize(List<T> data)
+    public void serialize(T data)
     {
         string json = JsonSerializer.Serialize(data);
         File.WriteAllText(Directory.GetCurrentDirectory() + $"\\{_fileName}.json", json);
     }
 
-    public Result<List<T>> deserialize()
+    public Result<T> deserialize()
     {
         string fileName = $"{_fileName}.json";
         try
         {
             string jsonString = File.ReadAllText(fileName);
-            List<T>? data = JsonSerializer.Deserialize<List<T>>(jsonString);
+            T? data = JsonSerializer.Deserialize<T>(jsonString);
             if (data is not null)
-                return Result<List<T>>.Success(data);
+                return Result<T>.Success(data);
         }
         catch (FileNotFoundException)
         {
-            Result<List<T>>.Failure($"{_fileName}.json is not found.");
+            Result<T>.Failure($"{_fileName}.json is not found.");
         }
-        return Result<List<T>>.Failure("Failed to deserialize data.");
+        return Result<T>.Failure($"Failed to deserialize data.");
     }
 }
