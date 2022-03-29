@@ -20,10 +20,10 @@ public class Meeting
         get { return _description; }
         set { setDescription(value.Value); }
     }
-    public Category Category { get; private set; }
-    public Enums.Type Type { get; private set; }
-    public DateTime StartDate { get; private set; }
-    public DateTime EndDate { get; private set; }
+    public Category? Category { get; set; }
+    public Enums.Type? Type { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
     public List<Person> Attendees { get; set; }
 
 
@@ -56,7 +56,8 @@ public class Meeting
     public Result setCategory(string category)
     {
         Result<Category> result;
-
+        if(category.All(char.IsDigit))
+            return Result.Failure("Category cant be number.");
         result = category.TryParseToCategory();
         if (result.IsSuccess)
         {
