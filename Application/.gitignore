@@ -1,0 +1,10 @@
+*.exe.config
+*.pdb
+*.AssemblyAttributes.cs
+*.g.cs
+*.i.cs
+*.cache
+*.baml
+*.resources
+*.lref
+packages
