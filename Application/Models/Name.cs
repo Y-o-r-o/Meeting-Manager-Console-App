@@ -7,7 +7,12 @@ public class Name
     const int MINIMUM_NAME_LENGHT = 6;
     const int MAXIMUM_NAME_LENGHT = 20;
 
-    public string Value { get; private set; }
+    private string _value = string.Empty;
+    public string Value
+    {
+        get { return _value; }
+        set { setName(value); }
+    }
 
     public Result setName(string name)
     {
@@ -16,7 +21,7 @@ public class Name
         if (name.ContainsSpecialChars())
             return Result.Failure("Name should have only letters or numbers.");
 
-        Value = name;
+        _value = name;
 
         return Result.Success();
     }

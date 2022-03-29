@@ -19,5 +19,10 @@ namespace Application.Helpers
             Console.WriteLine("Press any key to continue.");
             Console.ReadKey();
         }
+
+        public static void WaitForKeypress (){
+            Console.WriteLine("Press any key to continue.");
+            Console.ReadKey();
+        }
     }
 }

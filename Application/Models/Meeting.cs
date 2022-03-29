@@ -6,9 +6,20 @@ using Application.Helpers;
 namespace Application.Models;
 public class Meeting
 {
-    public Name Name { get; private set; }
+    private Name _name;
+    private Description _description;
+
+    public Name Name
+    {
+        get { return _name; }
+        set { setName(value.Value); }
+    }
     public Person ResponsiblePerson { get; set; }
-    public Description Description { get; private set; }
+    public Description Description
+    {
+        get { return _description; }
+        set { setDescription(value.Value); }
+    }
     public Category Category { get; private set; }
     public Enums.Type Type { get; private set; }
     public DateTime StartDate { get; private set; }
@@ -16,16 +27,19 @@ public class Meeting
     public List<Person> Attendees { get; set; }
 
 
-    public Meeting(){
-        Name = new Name();
-        Description = new Description();
+    public Meeting()
+    {
+        _name = new Name();
+        _description = new Description();
+
+        ResponsiblePerson = new Person();
         Attendees = new List<Person>();
     }
     public Result setName(string name)
     {
         Result result;
 
-        result = Name.setName(name);
+        result = _name.setName(name);
 
         return result;
     }
@@ -34,7 +48,7 @@ public class Meeting
     {
         Result result;
 
-        result = Description.setDescription(description);
+        result = _description.setDescription(description);
 
         return result;
     }
@@ -96,5 +110,5 @@ public class Meeting
         return Result.Failure(result.Error);
     }
 
-    public string getName(){ return Name.Value; }
+    public string getName() { return Name.Value; }
 }

@@ -12,7 +12,7 @@ namespace Application.Core
     {
         public bool IsSuccess { get; set;} = false;
 
-        public T? Value {get; set;}
+        public T Value {get; set;}
 
         public string Error {get; set;} = string.Empty;
 

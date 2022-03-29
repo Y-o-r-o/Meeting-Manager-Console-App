@@ -15,16 +15,6 @@ public static class StringExtensions
         return (str.Length >= minLenght && str.Length <= maxLenght);
     }
 
-    // This would be better solution, but sadly i didn't figuret out this to work.
-    //
-    // public static async Result<T> TryParseEnum<T>(this string str) where T : Enum
-    // {
-    //     var isEnumParsed = Enum.TryParse(str, true, out T parsed);
-    //     return isEnumParsed ?
-    //         Result<T>.Success(parsed) :
-    //         Result<T>.Failure("Given string didn't matched any existing ___.");
-    // }
-
     public static Result<Category> TryParseToCategory(this string str)
     {
         var isEnumParsed = Enum.TryParse(str, true, out Category parsed);

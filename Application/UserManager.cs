@@ -4,7 +4,7 @@ using Application.Models;
 
 public class UserManager
 {
-    public Person User { get; private set; }
+    public Person User { get; private set; } = new Person();
 
     public Result login()
     {
