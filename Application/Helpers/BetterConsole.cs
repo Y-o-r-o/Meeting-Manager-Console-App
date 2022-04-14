@@ -2,25 +2,25 @@ namespace Application.Helpers
 {
     public static class BetterConsole
     {
-        public static string ReadLine (){
+        public static string readLine (){
             string? str = Console.ReadLine();
             if(str is null) return string.Empty;
             return str;
         }
 
-        public static string ReadLineAndClear (){
-            string str = ReadLine();
+        public static string readLineAndClear (){
+            string str = readLine();
             Console.Clear();
             return str;
         }
 
-        public static void WriteLineAndWaitForKeypress (string stringToWrite){
+        public static void writeLineAndWaitForKeypress (string stringToWrite){
             Console.WriteLine(stringToWrite);
             Console.WriteLine("Press any key to continue.");
             Console.ReadKey();
         }
 
-        public static void WaitForKeypress (){
+        public static void waitForKeypress (){
             Console.WriteLine("Press any key to continue.");
             Console.ReadKey();
         }

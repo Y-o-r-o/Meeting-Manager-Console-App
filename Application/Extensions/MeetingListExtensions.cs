@@ -8,13 +8,9 @@ namespace Application.Extensions
     {
         public static Result<Meeting> GetMeetingByName(this List<Meeting> meetings, string name)
         {
-            Name validName = new Name();
+            Name validName = new Name(name);
 
-            Result result = validName.setName(name);
-            if (!result.IsSuccess)
-                return Result<Meeting>.Failure(result.Error);
-
-            Meeting? meeting = meetings.FirstOrDefault(meeting => meeting.Name.Value.Equals(name));
+            Meeting? meeting = meetings.FirstOrDefault(meeting => meeting.Name.Equals(name));
 
             if (meeting is null)
                 return Result<Meeting>.Failure("Meeting not found.");
@@ -29,7 +25,7 @@ namespace Application.Extensions
 
         public static List<Meeting> GetMeetingsByResponsiblePerson(this List<Meeting> meetings, string responsiblePersonName)
         {
-            return meetings.FindAll(meeting => meeting.ResponsiblePerson.getName().Equals(responsiblePersonName));
+            return meetings.FindAll(meeting => meeting.ResponsiblePerson.Username.Equals(responsiblePersonName));
         }
         public static List<Meeting> GetMeetingByCategory(this List<Meeting> meetings, string category)
         {
@@ -45,7 +41,7 @@ namespace Application.Extensions
             if (!validStartDate.IsSuccess)
                 return Result<List<Meeting>>.Failure("Entered wrong date format.");
             return Result<List<Meeting>>.Success(
-                meetings.FindAll(meeting => DateOnly.FromDateTime(meeting.StartDate) >= validStartDate.Value));
+                meetings.FindAll(meeting => DateOnly.FromDateTime(meeting.FromToDateTime.StartDate) >= validStartDate.Value));
         }
         public static Result<List<Meeting>> GetMeetingByEndDate(this List<Meeting> meetings, string endDate)
         {
@@ -53,7 +49,7 @@ namespace Application.Extensions
             if (!validEndDate.IsSuccess)
                 return Result<List<Meeting>>.Failure("Entered wrong date format.");
             return Result<List<Meeting>>.Success(
-                meetings.FindAll(meeting => DateOnly.FromDateTime(meeting.EndDate) <= validEndDate.Value));
+                meetings.FindAll(meeting => DateOnly.FromDateTime(meeting.FromToDateTime.EndDate) <= validEndDate.Value));
         }
 
         public static Result<List<Meeting>> GetMeetingByAttendeesCount(this List<Meeting> meetings, string countStr)
@@ -70,7 +66,7 @@ namespace Application.Extensions
             int count = 1;
             foreach (Meeting meeting in meetings)
             {
-                Console.WriteLine(count.ToString() + ". " + meeting.getName());
+                Console.WriteLine(count.ToString() + ". " + meeting.Name);
                 count++;
             }
         }

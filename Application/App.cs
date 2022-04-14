@@ -35,9 +35,12 @@ public class App
 
         appIsRuning = true;
 
-        BetterConsole.WriteLineAndWaitForKeypress(WELCOME_MESSAGE);
+        BetterConsole.writeLineAndWaitForKeypress(WELCOME_MESSAGE);
 
-        login();
+        while (userManager.CurrentUser is null && appIsRuning)
+        {
+            login();
+        }
 
         while (appIsRuning)
         {
@@ -66,32 +69,32 @@ public class App
         foreach (string menuItem in MENU_ITEMS)
             Console.WriteLine(menuItem);
         Console.Write("Type number to select or 'q' to exit app: ");
-        switch (BetterConsole.ReadLineAndClear())
+        switch (BetterConsole.readLineAndClear())
         {
             case "1":
                 result = createMeeting();
                 if (!result.IsSuccess)
-                    BetterConsole.WriteLineAndWaitForKeypress(result.Error);
+                    BetterConsole.writeLineAndWaitForKeypress(result.Error);
                 break;
             case "2":
                 result = deleteMeeting();
                 if (!result.IsSuccess)
-                    BetterConsole.WriteLineAndWaitForKeypress(result.Error);
+                    BetterConsole.writeLineAndWaitForKeypress(result.Error);
                 break;
             case "3":
                 result = addAPersonToMeeting();
                 if (!result.IsSuccess)
-                    BetterConsole.WriteLineAndWaitForKeypress(result.Error);
+                    BetterConsole.writeLineAndWaitForKeypress(result.Error);
                 break;
             case "4":
                 result = removeAPersonFromMeeting();
                 if (!result.IsSuccess)
-                    BetterConsole.WriteLineAndWaitForKeypress(result.Error);
+                    BetterConsole.writeLineAndWaitForKeypress(result.Error);
                 break;
             case "5":
                 result = listAllMeetings();
                 if (!result.IsSuccess)
-                    BetterConsole.WriteLineAndWaitForKeypress(result.Error);
+                    BetterConsole.writeLineAndWaitForKeypress(result.Error);
                 break;
             case "q":
                 appIsRuning = false;
@@ -105,13 +108,15 @@ public class App
 
     private void login()
     {
-        while (!userManager.login().IsSuccess && appIsRuning)
-            askToTryAgain();
-        Console.Clear();
+        Console.WriteLine("Enter your username:");
+        Result result = userManager.login(BetterConsole.readLine());
+        if (!result.IsSuccess)
+            askToTryAgain(result);
     }
 
-    private void askToTryAgain()
+    private void askToTryAgain(Result problem)
     {
+        Console.WriteLine(problem.Error);
         Console.WriteLine("Press any key to try again, or 'q' to exit application.");
         if (Console.ReadKey().Equals("q"))
             appIsRuning = false;
@@ -119,38 +124,30 @@ public class App
 
     private Result createMeeting()
     {
-        Meeting meeting = new Meeting();
-        Result result;
+        Meeting meeting = new Meeting(userManager.CurrentUser);
 
         Console.WriteLine("Enter meeting name: ");
-        result = meeting.setName(BetterConsole.ReadLine());
-        if (!result.IsSuccess) return result;
-
-        meeting.ResponsiblePerson = userManager.User;
+        meeting.Name = new Name(BetterConsole.readLine());
 
         Console.WriteLine("Enter meeting description: ");
-        result = meeting.setDescription(BetterConsole.ReadLine());
-        if (!result.IsSuccess) return result;
+        meeting.Description = new Description(BetterConsole.readLine());
 
         Console.WriteLine("Enter category: ");
-        result = meeting.setCategory(BetterConsole.ReadLine());
-        if (!result.IsSuccess) return result;
+        meeting.Category = new Category(BetterConsole.readLine());
 
         Console.WriteLine("Enter type: ");
-        result = meeting.setType(BetterConsole.ReadLine());
-        if (!result.IsSuccess) return result;
+        meeting.Type = new Application.Models.Type(BetterConsole.readLine());
 
         Console.WriteLine("Enter start date: ");
-        result = meeting.setStartDate(BetterConsole.ReadLine());
-        if (!result.IsSuccess) return result;
-
+        string startDate = BetterConsole.readLine();
         Console.WriteLine("Enter end date: ");
-        result = meeting.setEndDate(BetterConsole.ReadLine());
-        if (!result.IsSuccess) return result;
+        string endDate = BetterConsole.readLine();
+
+        meeting.FromToDateTime = new FromToDateTime(startDate,endDate);
 
         storeMeeting(meeting);
 
-        BetterConsole.WriteLineAndWaitForKeypress("Meeting successfully added.");
+        BetterConsole.writeLineAndWaitForKeypress("Meeting successfully added.");
         return Result.Success();
     }
 
@@ -165,14 +162,14 @@ public class App
     private Result deleteMeeting()
     {
         Console.WriteLine("Enter name of meeting you want to select: ");
-        Result<Meeting> result = meetings.GetMeetingByName(BetterConsole.ReadLine());
+        Result<Meeting> result = meetings.GetMeetingByName(BetterConsole.readLine());
 
         if (!result.IsSuccess)
             return Result.Failure(result.Error);
 
         var meeting = result.Value;
 
-        if (meeting.ResponsiblePerson == userManager.User)
+        if (meeting.ResponsiblePerson == userManager.CurrentUser)
         {
             meetings.Remove(meeting);
             meetingsSerializer.serialize(meetings);
@@ -187,32 +184,27 @@ public class App
     private Result addAPersonToMeeting()
     {
         Console.WriteLine("Enter name of meeting you want to select: ");
-        Result<Meeting> result = meetings.GetMeetingByName(BetterConsole.ReadLine());
+        Result<Meeting> result = meetings.GetMeetingByName(BetterConsole.readLine());
 
         if (!result.IsSuccess)
             return Result.Failure(result.Error);
 
         var meeting = result.Value;
 
-        Name name = new Name();
-
         Console.WriteLine("Enter name of attendee you want to add: ");
-        Result typeNameResult = name.setName(BetterConsole.ReadLine());
+        Name name = new Name(BetterConsole.readLine());
 
-        if (!typeNameResult.IsSuccess)
-            return Result.Failure(typeNameResult.Error);
-
-        if (meeting.ResponsiblePerson.getName().Equals(name.Value))
+        if (meeting.ResponsiblePerson.Username.Equals(name))
             return Result.Failure("You can't add responsible person as attendee.");
 
         List<Person> meetingAttendees = meeting.Attendees;
 
-        if (meetingAttendees.FirstOrDefault(attendee => attendee.getName().Equals(name.Value)) is not null)
+        if (meetingAttendees.FirstOrDefault(attendee => attendee.Username.Equals(name)) is not null)
             return Result.Failure("Person is already in this meeting.");
 
         warnIfMeetingsIntersects(name, meeting);
 
-        meetingAttendees.Add(new Person() { Username = name });
+        meetingAttendees.Add(new Person(name));
         meetingsSerializer.serialize(meetings);
 
         return Result.Success();
@@ -221,42 +213,38 @@ public class App
     private void warnIfMeetingsIntersects(Name name, Meeting meeting)
     {
         foreach (Meeting meetingContainingAttendee in meetings.FindAll(meeting =>
-         meeting.Attendees.Any(attendee => attendee.getName().Equals(name.Value))))
+         meeting.Attendees.Any(attendee => attendee.Username.Equals(name))))
         {
-            if (meetingContainingAttendee.StartDate < meeting.EndDate &&
-            meeting.StartDate < meetingContainingAttendee.EndDate)
+            if (meetingContainingAttendee.FromToDateTime.StartDate < meeting.FromToDateTime.EndDate &&
+            meeting.FromToDateTime.StartDate < meetingContainingAttendee.FromToDateTime.EndDate)
                 Console.WriteLine(
-                    $"Warning: Meeting {meeting.getName()} intersects with {meetingContainingAttendee.getName()}"
+                    $"Warning: Meeting {meeting.Name} intersects with {meetingContainingAttendee.Name}"
                     );
         }
     }
     private Result removeAPersonFromMeeting()
     {
         Console.WriteLine("Enter name of meeting you want to select: ");
-        Result<Meeting> result = meetings.GetMeetingByName(BetterConsole.ReadLine());
+        Result<Meeting> result = meetings.GetMeetingByName(BetterConsole.readLine());
 
         if (!result.IsSuccess)
             return Result.Failure(result.Error);
 
         var meeting = result.Value;
 
-        Name name = new Name();
 
         Console.WriteLine("Enter name of attendee you want to remove: ");
-        Result typeNameResult = name.setName(BetterConsole.ReadLine());
+        Name name = new Name(BetterConsole.readLine());
 
-        if (!typeNameResult.IsSuccess)
-            return Result.Failure(typeNameResult.Error);
-
-        if (meeting.ResponsiblePerson.getName().Equals(name.Value))
+        if (meeting.ResponsiblePerson.Username.Equals(name))
             return Result.Failure("You can't remove responsible personfrom meeting.");
 
         List<Person> meetingAttendees = meeting.Attendees;
 
-        if (meetingAttendees.FirstOrDefault(attendee => attendee.getName().Equals(name.Value)) is null)
+        if (meetingAttendees.FirstOrDefault(attendee => attendee.Username.Equals(name)) is null)
             return Result.Failure("This person doesn't exist in this meeting.");
 
-        meetingAttendees.Remove(new Person() { Username = name });
+        meetingAttendees.Remove(new Person(name));
         meetingsSerializer.serialize(meetings);
 
         Console.WriteLine("Person successfully removed. ");
@@ -269,57 +257,57 @@ public class App
         string input;
 
         Console.WriteLine("Type fragments from description to filter data. Or type * to select all.");
-        input = BetterConsole.ReadLine();
+        input = BetterConsole.readLine();
         if (!input.Equals("*"))
             selectedMeetings = selectedMeetings.GetMeetingsByDescription(input);
 
         Console.WriteLine("Type responsible person name to filter data. Or type * to select all.");
-        input = BetterConsole.ReadLine();
+        input = BetterConsole.readLine();
         if (!input.Equals("*"))
             selectedMeetings = selectedMeetings.GetMeetingsByResponsiblePerson(input);
 
         Console.WriteLine("Type category to filter data. Or type * to select all.");
-        input = BetterConsole.ReadLine();
+        input = BetterConsole.readLine();
         if (!input.Equals("*"))
             selectedMeetings = selectedMeetings.GetMeetingByCategory(input);
 
         Console.WriteLine("Type type to filter data. Or type * to select all.");
-        input = BetterConsole.ReadLine();
+        input = BetterConsole.readLine();
         if (!input.Equals("*"))
             selectedMeetings = selectedMeetings.GetMeetingByType(input);
 
         Console.WriteLine("Type start date (yyyy/mm/dd) to filter data. Or type * to select all.");
-        input = BetterConsole.ReadLine();
+        input = BetterConsole.readLine();
         if (!input.Equals("*"))
         {
             Result<List<Meeting>> result = selectedMeetings.GetMeetingByStartDate(input);
-            if(result.IsSuccess)
+            if (result.IsSuccess)
                 selectedMeetings = result.Value;
             else return Result.Failure(result.Error);
         }
 
         Console.WriteLine("Type end date (yyyy/mm/dd) to filter data. Or type * to select all.");
-        input = BetterConsole.ReadLine();
+        input = BetterConsole.readLine();
         if (!input.Equals("*"))
         {
             Result<List<Meeting>> result = selectedMeetings.GetMeetingByEndDate(input);
-            if(result.IsSuccess)
+            if (result.IsSuccess)
                 selectedMeetings = result.Value;
             else return Result.Failure(result.Error);
         }
 
         Console.WriteLine("Type attendees count to filter data. Or type * to select all.");
-        input = BetterConsole.ReadLine();
+        input = BetterConsole.readLine();
         if (!input.Equals("*"))
         {
-           Result<List<Meeting>> result = selectedMeetings.GetMeetingByAttendeesCount(input);
-            if(result.IsSuccess)
+            Result<List<Meeting>> result = selectedMeetings.GetMeetingByAttendeesCount(input);
+            if (result.IsSuccess)
                 selectedMeetings = result.Value;
             else return Result.Failure(result.Error);
         }
 
         selectedMeetings.Print();
-        BetterConsole.WaitForKeypress();
+        BetterConsole.waitForKeypress();
 
         return Result.Success();
     }

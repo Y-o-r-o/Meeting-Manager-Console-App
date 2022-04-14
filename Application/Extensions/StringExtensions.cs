@@ -1,5 +1,4 @@
 using Application.Core;
-using Application.Enums;
 
 namespace Application.Extensions;
 
@@ -15,32 +14,7 @@ public static class StringExtensions
         return (str.Length >= minLenght && str.Length <= maxLenght);
     }
 
-    public static Result<Category> TryParseToCategory(this string str)
-    {
-        var isEnumParsed = Enum.TryParse(str, true, out Category parsed);
-        return isEnumParsed ?
-            Result<Category>.Success(parsed) :
-            Result<Category>.Failure("Given string didn't matched any existing category.");
-    }
-
-    public static Result<Enums.Type> TryParseToType(this string str)
-    {
-        var isEnumParsed = Enum.TryParse(str, true, out Enums.Type parsed);
-        return isEnumParsed ?
-            Result<Enums.Type>.Success(parsed) :
-            Result<Enums.Type>.Failure("Given string didn't matched any existing type.");
-    }
-
-    public static Result<DateTime> TryParseToDateTime(this string str)
-    {
-        DateTime dateTime; 
-        try {
-            dateTime = DateTime.Parse(str);
-        } catch (FormatException){
-            return Result<DateTime>.Failure("Given string didn.t matched date format.");
-        }
-        return Result<DateTime>.Success(dateTime);
-    }
+    
 
     public static Result<DateOnly> TryParseToDateOnly(this string str)
     {

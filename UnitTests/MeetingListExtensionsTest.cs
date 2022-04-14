@@ -37,7 +37,7 @@ public class MeetingListExtensionsTest
             var meeting = meetings.GetMeetingByName(name);
             
             Assert.IsTrue(meeting.IsSuccess);
-            Assert.AreEqual(meeting.Value.getName(), name);
+            Assert.AreEqual(meeting.Value.Name, name);
         }
     }
 

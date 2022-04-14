@@ -4,23 +4,20 @@ using Application.Models;
 
 public class UserManager
 {
-    public Person User { get; private set; } = new Person();
+    public Person? CurrentUser { get; set; }
 
-    public Result login()
+    public Result login(string loginStr)
     {
-        Console.Clear();
-        Console.WriteLine("Enter your username:");
+        try
+        {
+            Name username = new Name(loginStr);
+            CurrentUser = new Person(username);
+        }
+        catch (ArgumentException ex)
+        {
+            return Result.Failure(ex.ToString());
+        }
 
-        string enteredUsername = BetterConsole.ReadLine();
-        
-        Name username = new Name();
-        var result = username.setName(enteredUsername);
-
-        if (!result.IsSuccess)
-            BetterConsole.WriteLineAndWaitForKeypress(result.Error);
-
-        User = new Person(){ Username = username };
-
-        return result;
+        return Result.Success();
     }
 }
