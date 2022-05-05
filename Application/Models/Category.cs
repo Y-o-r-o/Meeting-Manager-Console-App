@@ -4,8 +4,9 @@ namespace Application.Models
 {
     public class Category
     {
-        public Categories Value { get; }
+        public Categories Value { get; set; }
 
+        public Category() { }
         public Category(string category)
         {
             if (category.All(char.IsDigit))

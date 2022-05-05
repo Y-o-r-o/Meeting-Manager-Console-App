@@ -2,12 +2,9 @@ namespace Application.Models
 {
     public class Type
     {
-        public Types Value { get; }
+        public Types Value { get; set; }
 
-        public Type()
-        {
-            Value = default(Types);
-        }
+        public Type() { }
         public Type(string type)
         {
             if (type.All(char.IsDigit))

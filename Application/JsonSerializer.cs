@@ -3,7 +3,7 @@ using Application.Core;
 using Application.Models;
 
 namespace Application;
-public class JsonSerializer<T>
+public class JsonSerializer<T>: ISerializer<T>
 {
     public string? FileName { get; set; }
     public void serialize(T data)
@@ -12,13 +12,15 @@ public class JsonSerializer<T>
         File.WriteAllText(Directory.GetCurrentDirectory() + $"\\{FileName}.json", json);
     }
 
-    public T? deserialize()
+    public T deserialize()
     {
         string fileNameWithExtension = $"{FileName}.json";
         try
         {
             string jsonString = File.ReadAllText(fileNameWithExtension);
-            T? data = JsonSerializer.Deserialize<T>(jsonString);
+            T data = JsonSerializer.Deserialize<T>(jsonString);
+            if (data is null) throw new FileLoadException();
+            Console.Read();
             return data;
         }
         catch (FileNotFoundException)

@@ -21,10 +21,10 @@ public class App
     private MeetingManager meetingManager;
     private UserManager userManager;
 
-    public App()
+    public App(IServiceProvider services)
     {
         userManager = new UserManager();
-        meetingManager = new MeetingManager();
+        meetingManager = new MeetingManager(services);
     }
 
     public void run()

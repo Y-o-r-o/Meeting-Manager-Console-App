@@ -8,7 +8,16 @@ namespace Application.Extensions
     {
         public static Result<Meeting> GetMeetingByName(this List<Meeting> meetings, string name)
         {
-            Name validName = new Name(name);
+            Name validName;
+            
+            try
+            {
+                validName = new Name(name);
+            }
+            catch (ArgumentException ex)
+            {
+                return Result<Meeting>.Failure(ex.ToString());
+            }
 
             Meeting? meeting = meetings.FirstOrDefault(meeting => meeting.Name.Equals(name));
 

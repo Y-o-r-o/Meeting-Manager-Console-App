@@ -4,7 +4,7 @@ using Application.Extensions;
 namespace Application.Models;
 public class Person
 {
-    private readonly Name username;
+    public Name username { get; }
 
     public Person(Name username) {
         this.username = username;

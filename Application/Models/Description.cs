@@ -8,15 +8,28 @@ public class Description
     const int MINIMUM_DESCRIPTION_LENGHT = 0;
     const int MAXIMUM_DESCRIPTION_LENGHT = 200;
 
-    public string Value { get; }
-
-    public Description (string name)
+    private string _value;
+    public string Value
     {
-        if (!name.LenghtIsBetween(MINIMUM_DESCRIPTION_LENGHT, MAXIMUM_DESCRIPTION_LENGHT))
-            throw new ArgumentException($"Description lenght should be between {MINIMUM_DESCRIPTION_LENGHT} and {MAXIMUM_DESCRIPTION_LENGHT}.");
+        get
+        {
+            return _value;
+        }
+        set
+        {
+            if (!value.LenghtIsBetween(MINIMUM_DESCRIPTION_LENGHT, MAXIMUM_DESCRIPTION_LENGHT))
+                throw new ArgumentException($"Description lenght should be between {MINIMUM_DESCRIPTION_LENGHT} and {MAXIMUM_DESCRIPTION_LENGHT}.");
 
+            _value = value;
+        }
+    }
+
+    public Description(string name)
+    {
         Value = name;
     }
+
+    public Description() { }
 
     public static implicit operator string(Description description) => description.Value;
 

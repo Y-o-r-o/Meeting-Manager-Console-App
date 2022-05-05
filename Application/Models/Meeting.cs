@@ -12,5 +12,5 @@ public class Meeting
     public Type? Type { get; set; }
     public FromToDateTime? FromToDateTime { get; set; }
     public List<Person> Attendees { get; set; } = new List<Person>();
-
+    
 }
