@@ -8,11 +8,6 @@ namespace Application.Models
         public DateTime StartDate { get; set; } 
         public DateTime EndDate { get; set; }
 
-        public FromToDateTime()
-        {
-            StartDate = DateTime.Now.AddDays(1);
-            EndDate = DateTime.Now.AddDays(1).AddHours(1);
-        }
         public FromToDateTime(string startDate, string endDate)
         {
             StartDate = TryParseToDateTime(startDate);

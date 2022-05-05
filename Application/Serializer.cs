@@ -3,35 +3,27 @@ using Application.Core;
 using Application.Models;
 
 namespace Application;
-public class Serializer<T>
+public class JsonSerializer<T>
 {
-    private string _fileName;
-
-    public Serializer(string filename)
-    {
-        _fileName = filename;
-    }
-
+    public string? FileName { get; set; }
     public void serialize(T data)
     {
         string json = JsonSerializer.Serialize(data);
-        File.WriteAllText(Directory.GetCurrentDirectory() + $"\\{_fileName}.json", json);
+        File.WriteAllText(Directory.GetCurrentDirectory() + $"\\{FileName}.json", json);
     }
 
-    public Result<T> deserialize()
+    public T? deserialize()
     {
-        string fileName = $"{_fileName}.json";
+        string fileNameWithExtension = $"{FileName}.json";
         try
         {
-            string jsonString = File.ReadAllText(fileName);
+            string jsonString = File.ReadAllText(fileNameWithExtension);
             T? data = JsonSerializer.Deserialize<T>(jsonString);
-            if (data is not null)
-                return Result<T>.Success(data);
+            return data;
         }
         catch (FileNotFoundException)
         {
-            Result<T>.Failure($"{_fileName}.json is not found.");
+            throw new FileNotFoundException($"{fileNameWithExtension} is not found.");
         }
-        return Result<T>.Failure($"Failed to deserialize data.");
     }
 }

@@ -6,11 +6,6 @@ namespace Application.Models
     {
         public Categories Value { get; }
 
-        public Category()
-        {
-            Value = default(Categories);
-        }
-
         public Category(string category)
         {
             if (category.All(char.IsDigit))

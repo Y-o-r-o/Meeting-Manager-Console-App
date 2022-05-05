@@ -10,11 +10,6 @@ public class Description
 
     public string Value { get; }
 
-    public Description ()
-    {
-        Value = string.Empty;
-    }
-
     public Description (string name)
     {
         if (!name.LenghtIsBetween(MINIMUM_DESCRIPTION_LENGHT, MAXIMUM_DESCRIPTION_LENGHT))
