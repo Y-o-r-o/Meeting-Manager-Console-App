@@ -20,7 +20,6 @@ public class JsonSerializer<T>: ISerializer<T>
             string jsonString = File.ReadAllText(fileNameWithExtension);
             T data = JsonSerializer.Deserialize<T>(jsonString);
             if (data is null) throw new FileLoadException();
-            Console.Read();
             return data;
         }
         catch (FileNotFoundException)

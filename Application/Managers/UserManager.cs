@@ -1,10 +1,12 @@
 using Application.Core;
-using Application.Helpers;
 using Application.Models;
 
+namespace Managers;
+
 public class UserManager
+
 {
-    public Person? CurrentUser { get; set; }
+    public Person? CurrentUser { get; private set; }
 
     public Result login(string loginStr)
     {

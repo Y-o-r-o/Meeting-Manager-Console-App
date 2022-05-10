@@ -2,25 +2,30 @@ using Application.Core;
 using Application.Extensions;
 using Application.Helpers;
 using Application.Models;
+using MediatR;
 
-namespace Application.Meetings
+namespace Application.Meetings;
+
+public class AddAttendee
 {
-    public class AddAttendee
+    public class Command : IRequest<Result> { }
+    public class Handler : IRequestHandler<Command, Result>
     {
-         private DataContext _dataContext;
 
-        public AddAttendee(DataContext dataContext)
+        private DataContext _dataContext;
+
+        public Handler(DataContext dataContext)
         {
             _dataContext = dataContext;
         }
 
-        public Result Handle()
+        public Task<Result> Handle(Command request, CancellationToken cancellationToken)
         {
             Console.WriteLine("Enter name of meeting you want to select: ");
             Result<Meeting> result = _dataContext.Meetings.GetMeetingByName(BetterConsole.readLine());
 
             if (!result.IsSuccess)
-                return Result.Failure(result.Error);
+                return Task.FromResult(Result.Failure(result.Error));
 
             var meeting = result.Value;
 
@@ -32,21 +37,21 @@ namespace Application.Meetings
             }
             catch (ArgumentException ex)
             {
-                return Result.Failure(ex.ToString());
+                return Task.FromResult(Result.Failure(ex.ToString()));
             }
 
             if (meeting.ResponsiblePerson is not null && meeting.ResponsiblePerson.Username.Equals(name))
-                return Result.Failure("You can't add responsible person as attendee.");
+                return Task.FromResult(Result.Failure("You can't add responsible person as attendee."));
 
             if (meeting.Attendees.FirstOrDefault(attendee => attendee.Username.Equals(name)) is not null)
-                return Result.Failure("Person is already in this meeting.");
+                return Task.FromResult(Result.Failure("Person is already in this meeting."));
 
             warnIfMeetingsIntersects(name, meeting);
 
             meeting.Attendees.Add(new Person(name));
             _dataContext.saveChanges();
 
-            return Result.Success();
+            return Task.FromResult(Result.Success());
         }
 
         private void warnIfMeetingsIntersects(Name name, Meeting meeting)

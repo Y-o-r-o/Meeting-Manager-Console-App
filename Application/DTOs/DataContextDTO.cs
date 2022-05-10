@@ -1,10 +1,8 @@
 using Application.Models;
 
-namespace Application.DTOs
+namespace Application.DTOs;
+public class DataContextDTO
 {
-    public class DataContextDTO
-    {
-        public List<Meeting> Meetings { get; set; }
+    public List<Meeting> Meetings { get; set; }
 
-    }
 }

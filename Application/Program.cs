@@ -18,14 +18,9 @@ internal class Program
     {
         var host = createHostBuilder(args).Build();
 
-
-
-
-
         using var serviceScope = host.Services.CreateScope();
         var provider = serviceScope.ServiceProvider;
-        var exp = provider.GetRequiredService<DataContext>();
-
+        var exp = provider.GetService<DataContext>();
 
         App app = new App(host.Services);
         app.run();
