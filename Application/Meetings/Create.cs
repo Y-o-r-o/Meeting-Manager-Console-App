@@ -30,32 +30,32 @@ public class Create
             try
             {
                 Console.WriteLine("Enter meeting name: ");
-                meeting.Name = new Name(BetterConsole.readLine());
+                meeting.Name = new Name(BetterConsole.ReadLine());
 
                 Console.WriteLine("Enter meeting description: ");
-                meeting.Description = new Description(BetterConsole.readLine());
+                meeting.Description = new Description(BetterConsole.ReadLine());
 
                 Console.WriteLine("Enter category: ");
-                meeting.Category = new Category(BetterConsole.readLine());
+                meeting.Category = new Category(BetterConsole.ReadLine());
 
                 Console.WriteLine("Enter type: ");
-                meeting.Type = new Application.Models.Type(BetterConsole.readLine());
+                meeting.Type = new Application.Models.Type(BetterConsole.ReadLine());
 
                 Console.WriteLine("Enter start date: ");
-                string startDate = BetterConsole.readLine();
+                string startDate = BetterConsole.ReadLine();
                 Console.WriteLine("Enter end date: ");
-                string endDate = BetterConsole.readLine();
+                string endDate = BetterConsole.ReadLine();
                 meeting.FromToDateTime = new FromToDateTime(startDate, endDate);
             }
             catch (ArgumentException ex)
             {
-                return Task.FromResult(Result.Failure(ex.ToString()));
+                return Task.FromResult(Result.Failure(ex.Message));
             }
 
             _dataContext.Meetings.Add(meeting);
-            _dataContext.saveChanges();
+            _dataContext.SaveChanges();
 
-            BetterConsole.writeLineAndWaitForKeypress("Meeting successfully added.");
+            BetterConsole.WaitForKeypress("Meeting successfully added.");
             return Task.FromResult(Result.Success());
         }
 

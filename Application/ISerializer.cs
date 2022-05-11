@@ -2,8 +2,8 @@ namespace Application
 {
     public interface ISerializer<T>
     {
-        public void serialize(T data);
+        public void Serialize(T data);
 
-        public  T? deserialize();
+        public  T? Deserialize();
     }
 }

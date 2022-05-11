@@ -18,18 +18,37 @@ public class ManagerBase
 
     public Result Handle(IRequest<Result> request)
     {
+        Console.Clear();
         var result = Mediator.Send<Result>(request).Result;
         if (!result.IsSuccess)
         {
+            Console.Clear();
             Console.WriteLine(result.Error);
-            Console.WriteLine("Try again? y/n");
-            char key = BetterConsole.ReadKey();
+            char key = BetterConsole.ResponseWithKeyPress("Press any key to try again, or 'q' to cancel operation.");
 
-            if (key.Equals('y'))
-                return Handle(request);
-            return Result.Failure("Operation canceled.");
+            if (key.Equals('q'))
+                return Result.Failure("Operation canceled.");
+
+            return Handle(request);
         }
         return result;
     }
 
+    public Result<T> Handle<T>(IRequest<Result<T>> request)
+    {
+        Console.Clear();
+        var result = Mediator.Send<Result<T>>(request).Result;
+        if (!result.IsSuccess)
+        {
+            Console.Clear();
+            Console.WriteLine(result.Error);
+            char key = BetterConsole.ResponseWithKeyPress("Press any key to try again, or 'q' to cancel operation.");
+
+            if (key.Equals('q'))
+                return Result<T>.Failure("Operation canceled.");
+
+            return Handle(request);
+        }
+        return result;
+    }
 }

@@ -6,25 +6,22 @@ namespace Application.Extensions;
 
 public static class MeetingListExtensions
 {
-    public static Result<Meeting> GetMeetingByName(this List<Meeting> meetings, string name)
+    public static Meeting? GetMeetingByName(this List<Meeting> meetings, string name)
     {
         Name validName;
-
+        Meeting? meeting;
         try
         {
             validName = new Name(name);
         }
         catch (ArgumentException ex)
         {
-            return Result<Meeting>.Failure(ex.ToString());
+            throw new ArgumentException(ex.ToString());
         }
+        
+        meeting = meetings.FirstOrDefault(meeting => meeting.Name.Equals(validName));
 
-        Meeting? meeting = meetings.FirstOrDefault(meeting => meeting.Name.Equals(name));
-
-        if (meeting is null)
-            return Result<Meeting>.Failure("Meeting not found.");
-
-        return Result<Meeting>.Success(meeting);
+        return meeting;
     }
 
     public static List<Meeting> GetMeetingsByDescription(this List<Meeting> meetings, string description)

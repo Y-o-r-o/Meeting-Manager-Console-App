@@ -24,17 +24,22 @@ public class Delete
         public Task<Result> Handle(Command request, CancellationToken cancellationToken)
         {
             Console.WriteLine("Enter name of meeting you want to select: ");
-            Result<Meeting> result = _dataContext.Meetings.GetMeetingByName(BetterConsole.readLine());
+            Meeting? meeting;
+            try
+            {
+                meeting = _dataContext.Meetings.GetMeetingByName(BetterConsole.ReadLine());
+            }
+            catch (ArgumentException ex)
+            {
+                return Task.FromResult(Result.Failure(ex.Message));
+            }
 
-            if (!result.IsSuccess)
-                return Task.FromResult(Result.Failure(result.Error));
-
-            var meeting = result.Value;
+            if (meeting is null) return Task.FromResult(Result.Failure("Meeting not found."));
 
             if (meeting.ResponsiblePerson == request.Creator)
             {
                 _dataContext.Meetings.Remove(meeting);
-                _dataContext.saveChanges();
+                _dataContext.SaveChanges();
 
                 Console.WriteLine("Meeting is deleted.");
                 return Task.FromResult(Result.Success());

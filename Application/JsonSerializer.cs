@@ -6,13 +6,13 @@ namespace Application;
 public class JsonSerializer<T>: ISerializer<T>
 {
     public string? FileName { get; set; }
-    public void serialize(T data)
+    public void Serialize(T data)
     {
         string json = JsonSerializer.Serialize(data);
         File.WriteAllText(Directory.GetCurrentDirectory() + $"\\{FileName}.json", json);
     }
 
-    public T deserialize()
+    public T Deserialize()
     {
         string fileNameWithExtension = $"{FileName}.json";
         try

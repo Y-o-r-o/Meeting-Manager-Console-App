@@ -26,47 +26,47 @@ public class List
             try
             {
                 Console.WriteLine("Type fragments from description to filter data. Or type * to select all.");
-                input = BetterConsole.readLine();
+                input = BetterConsole.ReadLine();
                 if (!input.Equals("*"))
                     selectedMeetings = selectedMeetings.GetMeetingsByDescription(input);
 
                 Console.WriteLine("Type responsible person name to filter data. Or type * to select all.");
-                input = BetterConsole.readLine();
+                input = BetterConsole.ReadLine();
                 if (!input.Equals("*"))
                     selectedMeetings = selectedMeetings.GetMeetingsByResponsiblePerson(input);
 
                 Console.WriteLine("Type category to filter data. Or type * to select all.");
-                input = BetterConsole.readLine();
+                input = BetterConsole.ReadLine();
                 if (!input.Equals("*"))
                     selectedMeetings = selectedMeetings.GetMeetingByCategory(input);
 
                 Console.WriteLine("Type type to filter data. Or type * to select all.");
-                input = BetterConsole.readLine();
+                input = BetterConsole.ReadLine();
                 if (!input.Equals("*"))
                     selectedMeetings = selectedMeetings.GetMeetingByType(input);
 
                 Console.WriteLine("Type start date (yyyy/mm/dd) to filter data. Or type * to select all.");
-                input = BetterConsole.readLine();
+                input = BetterConsole.ReadLine();
                 if (!input.Equals("*"))
                     selectedMeetings = selectedMeetings.GetMeetingByStartDate(input);
 
                 Console.WriteLine("Type end date (yyyy/mm/dd) to filter data. Or type * to select all.");
-                input = BetterConsole.readLine();
+                input = BetterConsole.ReadLine();
                 if (!input.Equals("*"))
                     selectedMeetings = selectedMeetings.GetMeetingByEndDate(input);
 
                 Console.WriteLine("Type attendees count to filter data. Or type * to select all.");
-                input = BetterConsole.readLine();
+                input = BetterConsole.ReadLine();
                 if (!input.Equals("*"))
                     selectedMeetings = selectedMeetings.GetMeetingByAttendeesCount(input);
             }
             catch (ArgumentException ex)
             {
-                return Task.FromResult(Result.Failure(ex.ToString()));
+                return Task.FromResult(Result.Failure(ex.Message));
             }
 
             selectedMeetings.Print();
-            BetterConsole.waitForKeypress();
+            BetterConsole.WaitForKeypress();
 
             return Task.FromResult(Result.Success());
         }

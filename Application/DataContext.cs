@@ -13,9 +13,9 @@ namespace Application
             _serializer = serializer;
         }
 
-        public void saveChanges()
+        public void SaveChanges()
         {
-            _serializer.serialize(this);
+            _serializer.Serialize(this);
         }
 
     }

@@ -20,17 +20,20 @@ public class RemoveAttendee
 
         public Task<Result> Handle(Command request, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Enter name of meeting you want to select: ");
-            Result<Meeting> result = _dataContext.Meetings.GetMeetingByName(BetterConsole.readLine());
+            Meeting? meeting;
+            try
+            {
+                meeting = _dataContext.Meetings.GetMeetingByName(BetterConsole.ReadLine());
+            }
+            catch (ArgumentException ex)
+            {
+                return Task.FromResult(Result.Failure(ex.Message));
+            }
 
-            if (!result.IsSuccess)
-                return Task.FromResult(Result.Failure(result.Error));
-
-            var meeting = result.Value;
-
+            if (meeting is null) return Task.FromResult(Result.Failure("Meeting not found."));
 
             Console.WriteLine("Enter name of attendee you want to remove: ");
-            Name name = new Name(BetterConsole.readLine());
+            Name name = new Name(BetterConsole.ReadLine());
 
             if (meeting.ResponsiblePerson is not null && meeting.ResponsiblePerson.Username.Equals(name))
                 return Task.FromResult(Result.Failure("You can't remove responsible person from meeting."));
@@ -41,7 +44,7 @@ public class RemoveAttendee
                 return Task.FromResult(Result.Failure("This person doesn't exist in this meeting."));
 
             meetingAttendees.Remove(new Person(name));
-            _dataContext.saveChanges();
+            _dataContext.SaveChanges();
 
             Console.WriteLine("Person successfully removed. ");
             return Task.FromResult(Result.Success());

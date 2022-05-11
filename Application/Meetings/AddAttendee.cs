@@ -22,22 +22,27 @@ public class AddAttendee
         public Task<Result> Handle(Command request, CancellationToken cancellationToken)
         {
             Console.WriteLine("Enter name of meeting you want to select: ");
-            Result<Meeting> result = _dataContext.Meetings.GetMeetingByName(BetterConsole.readLine());
+            Meeting? meeting;
+            try
+            {
+                meeting = _dataContext.Meetings.GetMeetingByName(BetterConsole.ReadLine());
+            }
+            catch (ArgumentException ex)
+            {
+                return Task.FromResult(Result.Failure(ex.Message));
+            }
 
-            if (!result.IsSuccess)
-                return Task.FromResult(Result.Failure(result.Error));
-
-            var meeting = result.Value;
+            if(meeting is null) return Task.FromResult(Result.Failure("Meeting not found."));
 
             Console.WriteLine("Enter name of attendee you want to add: ");
             Name name;
             try
             {
-                name = new Name(BetterConsole.readLine());
+                name = new Name(BetterConsole.ReadLine());
             }
             catch (ArgumentException ex)
             {
-                return Task.FromResult(Result.Failure(ex.ToString()));
+                return Task.FromResult(Result.Failure(ex.Message));
             }
 
             if (meeting.ResponsiblePerson is not null && meeting.ResponsiblePerson.Username.Equals(name))
@@ -46,15 +51,15 @@ public class AddAttendee
             if (meeting.Attendees.FirstOrDefault(attendee => attendee.Username.Equals(name)) is not null)
                 return Task.FromResult(Result.Failure("Person is already in this meeting."));
 
-            warnIfMeetingsIntersects(name, meeting);
+            WarnIfMeetingsIntersects(name, meeting);
 
             meeting.Attendees.Add(new Person(name));
-            _dataContext.saveChanges();
+            _dataContext.SaveChanges();
 
             return Task.FromResult(Result.Success());
         }
 
-        private void warnIfMeetingsIntersects(Name name, Meeting meeting)
+        private void WarnIfMeetingsIntersects(Name name, Meeting meeting)
         {
             var sameNameMeetings = _dataContext.Meetings.FindAll(meeting => meeting.Attendees.Any(attendee => attendee.Username.Equals(name)));
             Meeting? intersectingMeeting;

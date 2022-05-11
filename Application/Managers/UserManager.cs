@@ -1,25 +1,26 @@
 using Application.Core;
+using Application.Helpers;
 using Application.Models;
+using Application.Users;
 
 namespace Managers;
 
-public class UserManager
+public class UserManager : ManagerBase
 
 {
     public Person? CurrentUser { get; private set; }
 
-    public Result login(string loginStr)
-    {
-        try
-        {
-            Name username = new Name(loginStr);
-            CurrentUser = new Person(username);
-        }
-        catch (ArgumentException ex)
-        {
-            return Result.Failure(ex.ToString());
-        }
+    public UserManager(IServiceProvider services) : base(services) { }
 
+    public Result Login()
+    {
+        var result = Handle(new Login.Command());
+        
+        if(!result.IsSuccess)
+            return Result.Failure(result.Error);
+        
+        CurrentUser = result.Value;
         return Result.Success();
+
     }
 }

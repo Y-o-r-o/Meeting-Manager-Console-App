@@ -17,19 +17,19 @@ public static class ServiceExtensions
 
         try
         {
-            dataContextDTO = dataContextDTOSerializer.deserialize();
+            dataContextDTO = dataContextDTOSerializer.Deserialize();
         }
         catch (FileNotFoundException)
         {
             dataContext = new(dataContextSerializer);
-            dataContext.saveChanges();
+            dataContext.SaveChanges();
             services.AddSingleton(dataContext);
             return services;
         }
         catch (FileLoadException)
         {
             dataContext = new(dataContextSerializer);
-            dataContext.saveChanges();
+            dataContext.SaveChanges();
             services.AddSingleton(dataContext);
             return services;
         }

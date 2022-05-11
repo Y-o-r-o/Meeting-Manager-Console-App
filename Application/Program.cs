@@ -16,17 +16,13 @@ internal class Program
 
     static void Main(string[] args)
     {
-        var host = createHostBuilder(args).Build();
-
-        using var serviceScope = host.Services.CreateScope();
-        var provider = serviceScope.ServiceProvider;
-        var exp = provider.GetService<DataContext>();
+        var host = CreateHostBuilder(args).Build();
 
         App app = new App(host.Services);
-        app.run();
+        app.Run();
     }
 
-    private static IHostBuilder createHostBuilder(string[] args)
+    private static IHostBuilder CreateHostBuilder(string[] args)
     {
         return Host.CreateDefaultBuilder(args)
             .ConfigureServices(services =>

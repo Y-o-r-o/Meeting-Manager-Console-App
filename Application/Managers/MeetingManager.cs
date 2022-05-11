@@ -13,28 +13,27 @@ public class MeetingManager : ManagerBase
         if (meetings is null) this.meetings = new();
     }
 
-    public Result createMeeting(Person creator)
+    public Result CreateMeeting(Person creator)
     {
         return Handle(new Create.Command() { Creator = creator });
     }
 
-
-    public Result deleteMeeting(Person creator)
+    public Result DeleteMeeting(Person creator)
     {
         return Handle(new Delete.Command() { Creator = creator });
     }
 
-    public Result addAPersonToMeeting()
+    public Result AddAPersonToMeeting()
     {
         return Handle(new AddAttendee.Command());
     }
 
-    public Result removeAPersonFromMeeting()
+    public Result RemoveAPersonFromMeeting()
     {
         return Handle(new Create.Command());
     }
 
-    public Result listAllMeetings()
+    public Result ListAllMeetings()
     {
         return Handle(new Create.Command());
     }

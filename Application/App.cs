@@ -1,6 +1,7 @@
 using Application.Core;
 using Application.Helpers;
 using Managers;
+using MediatR;
 
 public class App
 {
@@ -21,86 +22,60 @@ public class App
 
     public App(IServiceProvider services)
     {
-        userManager = new UserManager();
+        userManager = new UserManager(services);
         meetingManager = new MeetingManager(services);
     }
 
-    public void run()
+    public void Run()
     {
         appIsRuning = true;
 
-        BetterConsole.writeLineAndWaitForKeypress(WELCOME_MESSAGE);
+        BetterConsole.WaitForKeypress(WELCOME_MESSAGE);
 
-        while (userManager.CurrentUser is null && appIsRuning)
-            login();
+        while (userManager.CurrentUser is null)
+        {
+            var key = BetterConsole.ResponseWithKeyPress("Press any key to login, or 'q' to quit app.");
+            if (key.Equals('q'))
+                return;
+            userManager.Login();
+        }
 
         while (appIsRuning)
-        {
-            Console.Clear();
-            runMenu();
-        }
+            RunMenu();
 
     }
 
-    public void runMenu()
+    public void RunMenu()
     {
-        Result result;
+        Console.Clear();
 
         foreach (string menuItem in MENU_ITEMS)
             Console.WriteLine(menuItem);
         Console.Write("Type number to select or 'q' to exit app: ");
-        switch (BetterConsole.readLineAndClear())
+
+        switch (BetterConsole.ReadLineAndClear())
         {
             case "1":
-                result = meetingManager.createMeeting(userManager.CurrentUser);
-                if (!result.IsSuccess)
-                    BetterConsole.writeLineAndWaitForKeypress(result.Error);
-                break;
+                HandleResult(meetingManager.CreateMeeting(userManager.CurrentUser)); return;
             case "2":
-                result = meetingManager.deleteMeeting(userManager.CurrentUser);
-                if (!result.IsSuccess)
-                    BetterConsole.writeLineAndWaitForKeypress(result.Error);
-                break;
+                HandleResult(meetingManager.DeleteMeeting(userManager.CurrentUser)); return;
             case "3":
-                result = meetingManager.addAPersonToMeeting();
-                if (!result.IsSuccess)
-                    BetterConsole.writeLineAndWaitForKeypress(result.Error);
-                break;
+                HandleResult(meetingManager.AddAPersonToMeeting()); return;
             case "4":
-                result = meetingManager.removeAPersonFromMeeting();
-                if (!result.IsSuccess)
-                    BetterConsole.writeLineAndWaitForKeypress(result.Error);
-                break;
+                HandleResult(meetingManager.RemoveAPersonFromMeeting()); return;
             case "5":
-                result = meetingManager.listAllMeetings();
-                if (!result.IsSuccess)
-                    BetterConsole.writeLineAndWaitForKeypress(result.Error);
-                break;
+                HandleResult(meetingManager.ListAllMeetings()); return;
             case "q":
-                appIsRuning = false;
-                break;
+                appIsRuning = false; return;
             default:
-                Console.WriteLine("Selection isn't valid.");
-                break;
+                Console.WriteLine("Selection isn't valid."); return;
         }
-
     }
 
-    private void login()
+    private void HandleResult(Result result)
     {
-        Console.WriteLine("Enter your username:");
-        Result result = userManager.login(BetterConsole.readLine());
+        result = meetingManager.CreateMeeting(userManager.CurrentUser);
         if (!result.IsSuccess)
-            askToTryAgain(result);
+            BetterConsole.WaitForKeypress(result.Error);
     }
-
-    private void askToTryAgain(Result problem)
-    {
-        Console.WriteLine(problem.Error);
-        Console.WriteLine("Press any key to try again, or 'q' to exit application.");
-        if (Console.ReadKey().Equals("q"))
-            appIsRuning = false;
-    }
-
-    
 }
