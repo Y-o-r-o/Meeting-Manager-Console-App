@@ -1,7 +1,6 @@
 using Application.Core;
 using Application.Helpers;
 using Managers;
-using MediatR;
 
 public class App
 {

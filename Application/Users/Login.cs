@@ -7,17 +7,18 @@ namespace Application.Users;
 
 public class Login
 {
-    public class Command : IRequest<Result<Person>> { }
+    public class Command : IRequest<Result<Person>>
+    {
+        public string Name { get; set; }
+    }
     public class Handler : IRequestHandler<Command, Result<Person>>
     {
         public Task<Result<Person>> Handle(Command request, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Enter your username:");
-            var usernameStr = BetterConsole.ReadLineAndClear();
             Person currentUser;
             try
             {
-                Name username = new Name(usernameStr);
+                Name username = new Name(request.Name);
                 currentUser = new Person(username);
             }
             catch (ArgumentException ex)

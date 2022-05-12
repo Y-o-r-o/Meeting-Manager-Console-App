@@ -2,6 +2,7 @@ using Application.Core;
 using Application.Helpers;
 using Application.Models;
 using MediatR;
+using Type = Application.Models.Type;
 
 namespace Application.Meetings;
 
@@ -10,6 +11,12 @@ public class Create
     public class Command : IRequest<Result>
     {
         public Person? Creator { get; set; }
+        public string Description{get; set;}
+        public string Name{get; set;}
+        public string Category{get; set;}
+        public string Type{get; set;}
+        public string StartDate{get; set;}
+        public string EndDate{get; set;}
     }
     public class Handler : IRequestHandler<Command, Result>
     {
@@ -29,23 +36,11 @@ public class Create
 
             try
             {
-                Console.WriteLine("Enter meeting name: ");
-                meeting.Name = new Name(BetterConsole.ReadLine());
-
-                Console.WriteLine("Enter meeting description: ");
-                meeting.Description = new Description(BetterConsole.ReadLine());
-
-                Console.WriteLine("Enter category: ");
-                meeting.Category = new Category(BetterConsole.ReadLine());
-
-                Console.WriteLine("Enter type: ");
-                meeting.Type = new Application.Models.Type(BetterConsole.ReadLine());
-
-                Console.WriteLine("Enter start date: ");
-                string startDate = BetterConsole.ReadLine();
-                Console.WriteLine("Enter end date: ");
-                string endDate = BetterConsole.ReadLine();
-                meeting.FromToDateTime = new FromToDateTime(startDate, endDate);
+                meeting.Name = new Name(request.Name);
+                meeting.Description = new Description(request.Description);
+                meeting.Category = new Category(request.Category);
+                meeting.Type = new Type(request.Type);
+                meeting.FromToDateTime = new FromToDateTime(request.StartDate, request.EndDate);
             }
             catch (ArgumentException ex)
             {

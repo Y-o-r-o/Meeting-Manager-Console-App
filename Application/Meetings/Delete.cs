@@ -10,6 +10,7 @@ public class Delete
     public class Command : IRequest<Result>
     {
         public Person? Creator { get; set; }
+        public string Name { get; set; }
     }
     public class Handler : IRequestHandler<Command, Result>
     {
@@ -23,11 +24,10 @@ public class Delete
 
         public Task<Result> Handle(Command request, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Enter name of meeting you want to select: ");
             Meeting? meeting;
             try
             {
-                meeting = _dataContext.Meetings.GetMeetingByName(BetterConsole.ReadLine());
+                meeting = _dataContext.Meetings.GetMeetingByName(request.Name);
             }
             catch (ArgumentException ex)
             {

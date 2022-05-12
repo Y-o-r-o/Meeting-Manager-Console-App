@@ -8,7 +8,11 @@ namespace Application.Meetings;
 
 public class AddAttendee
 {
-    public class Command : IRequest<Result> { }
+    public class Command : IRequest<Result>
+    {
+        public string Meeting { get; set; }
+        public string Name { get; set; }
+    }
     public class Handler : IRequestHandler<Command, Result>
     {
 
@@ -21,24 +25,21 @@ public class AddAttendee
 
         public Task<Result> Handle(Command request, CancellationToken cancellationToken)
         {
-            Console.WriteLine("Enter name of meeting you want to select: ");
             Meeting? meeting;
             try
             {
-                meeting = _dataContext.Meetings.GetMeetingByName(BetterConsole.ReadLine());
+                meeting = _dataContext.Meetings.GetMeetingByName(request.Meeting);
             }
             catch (ArgumentException ex)
             {
                 return Task.FromResult(Result.Failure(ex.Message));
             }
+            if (meeting is null) return Task.FromResult(Result.Failure("Meeting not found."));
 
-            if(meeting is null) return Task.FromResult(Result.Failure("Meeting not found."));
-
-            Console.WriteLine("Enter name of attendee you want to add: ");
             Name name;
             try
             {
-                name = new Name(BetterConsole.ReadLine());
+                name = new Name(request.Name);
             }
             catch (ArgumentException ex)
             {

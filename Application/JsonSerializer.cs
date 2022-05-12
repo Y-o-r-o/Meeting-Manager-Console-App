@@ -1,6 +1,4 @@
 using System.Text.Json;
-using Application.Core;
-using Application.Models;
 
 namespace Application;
 public class JsonSerializer<T>: ISerializer<T>

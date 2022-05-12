@@ -7,7 +7,11 @@ using MediatR;
 namespace Application.Meetings;
 public class RemoveAttendee
 {
-    public class Command : IRequest<Result> { }
+    public class Command : IRequest<Result>
+    {
+        public string Meeting { get; set; }
+        public string Name { get; set; }
+    }
     public class Handler : IRequestHandler<Command, Result>
     {
 
@@ -23,7 +27,7 @@ public class RemoveAttendee
             Meeting? meeting;
             try
             {
-                meeting = _dataContext.Meetings.GetMeetingByName(BetterConsole.ReadLine());
+                meeting = _dataContext.Meetings.GetMeetingByName(request.Meeting);
             }
             catch (ArgumentException ex)
             {
@@ -32,9 +36,7 @@ public class RemoveAttendee
 
             if (meeting is null) return Task.FromResult(Result.Failure("Meeting not found."));
 
-            Console.WriteLine("Enter name of attendee you want to remove: ");
-            Name name = new Name(BetterConsole.ReadLine());
-
+            Name name = new Name(request.Name);
             if (meeting.ResponsiblePerson is not null && meeting.ResponsiblePerson.Username.Equals(name))
                 return Task.FromResult(Result.Failure("You can't remove responsible person from meeting."));
 

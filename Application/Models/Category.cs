@@ -1,5 +1,3 @@
-using System.ComponentModel;
-
 namespace Application.Models
 {
     public class Category

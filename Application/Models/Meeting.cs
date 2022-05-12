@@ -1,7 +1,3 @@
-using Application.Core;
-using Application.Extensions;
-using Application.Helpers;
-
 namespace Application.Models;
 public class Meeting
 {

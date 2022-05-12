@@ -7,7 +7,16 @@ using MediatR;
 namespace Application.Meetings;
 public class List
 {
-    public class Command : IRequest<Result> { }
+    public class Command : IRequest<Result> 
+    { 
+        public string Description{get; set;}
+        public string Name{get; set;}
+        public string Category{get; set;}
+        public string Type{get; set;}
+        public string StartDate{get; set;}
+        public string EndDate{get; set;}
+        public string AttendeeCount{get; set;}
+    }
     public class Handler : IRequestHandler<Command, Result>
     {
 
@@ -25,38 +34,31 @@ public class List
 
             try
             {
-                Console.WriteLine("Type fragments from description to filter data. Or type * to select all.");
-                input = BetterConsole.ReadLine();
+                input = request.Description;
                 if (!input.Equals("*"))
                     selectedMeetings = selectedMeetings.GetMeetingsByDescription(input);
 
-                Console.WriteLine("Type responsible person name to filter data. Or type * to select all.");
-                input = BetterConsole.ReadLine();
+                input = request.Name;
                 if (!input.Equals("*"))
                     selectedMeetings = selectedMeetings.GetMeetingsByResponsiblePerson(input);
 
-                Console.WriteLine("Type category to filter data. Or type * to select all.");
-                input = BetterConsole.ReadLine();
+                input = request.Category;
                 if (!input.Equals("*"))
                     selectedMeetings = selectedMeetings.GetMeetingByCategory(input);
 
-                Console.WriteLine("Type type to filter data. Or type * to select all.");
-                input = BetterConsole.ReadLine();
+                input = request.Type;
                 if (!input.Equals("*"))
                     selectedMeetings = selectedMeetings.GetMeetingByType(input);
 
-                Console.WriteLine("Type start date (yyyy/mm/dd) to filter data. Or type * to select all.");
-                input = BetterConsole.ReadLine();
+                input = request.StartDate;
                 if (!input.Equals("*"))
                     selectedMeetings = selectedMeetings.GetMeetingByStartDate(input);
 
-                Console.WriteLine("Type end date (yyyy/mm/dd) to filter data. Or type * to select all.");
-                input = BetterConsole.ReadLine();
+                input = request.EndDate;
                 if (!input.Equals("*"))
                     selectedMeetings = selectedMeetings.GetMeetingByEndDate(input);
 
-                Console.WriteLine("Type attendees count to filter data. Or type * to select all.");
-                input = BetterConsole.ReadLine();
+                input = request.AttendeeCount;
                 if (!input.Equals("*"))
                     selectedMeetings = selectedMeetings.GetMeetingByAttendeesCount(input);
             }

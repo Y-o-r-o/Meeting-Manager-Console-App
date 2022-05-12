@@ -1,14 +1,9 @@
 ﻿// See https://aka.ms/new-console-template for more information
 
-using Application;
-using Application.DTOs;
 using MediatR;
-using Application.Helpers;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Application.Meetings;
 using Application.Extensions;
-using Application.Models;
 
 internal class Program
 {

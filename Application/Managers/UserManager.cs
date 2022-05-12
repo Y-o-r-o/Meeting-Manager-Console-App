@@ -14,11 +14,14 @@ public class UserManager : ManagerBase
 
     public Result Login()
     {
-        var result = Handle(new Login.Command());
-        
-        if(!result.IsSuccess)
+        Console.WriteLine("Enter your username:");
+        var username = BetterConsole.ReadLineAndClear();
+
+        var result = Handle(new Login.Command() { Name = username });
+
+        if (!result.IsSuccess)
             return Result.Failure(result.Error);
-        
+
         CurrentUser = result.Value;
         return Result.Success();
 

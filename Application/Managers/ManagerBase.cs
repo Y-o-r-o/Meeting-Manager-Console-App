@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using Application.Core;
 using Application.Helpers;
-using Application.Meetings;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
