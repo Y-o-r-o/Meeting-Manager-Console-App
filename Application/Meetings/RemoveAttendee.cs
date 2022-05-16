@@ -27,7 +27,7 @@ public class RemoveAttendee
             Meeting? meeting;
             try
             {
-                meeting = _dataContext.Meetings.GetMeetingByName(request.Meeting);
+                meeting = _dataContext.Meetings.GetByName(request.Meeting);
             }
             catch (ArgumentException ex)
             {

@@ -27,7 +27,7 @@ public class Delete
             Meeting? meeting;
             try
             {
-                meeting = _dataContext.Meetings.GetMeetingByName(request.Name);
+                meeting = _dataContext.Meetings.GetByName(request.Name);
             }
             catch (ArgumentException ex)
             {

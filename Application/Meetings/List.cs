@@ -7,15 +7,15 @@ using MediatR;
 namespace Application.Meetings;
 public class List
 {
-    public class Command : IRequest<Result> 
-    { 
-        public string Description{get; set;}
-        public string Name{get; set;}
-        public string Category{get; set;}
-        public string Type{get; set;}
-        public string StartDate{get; set;}
-        public string EndDate{get; set;}
-        public string AttendeeCount{get; set;}
+    public class Command : IRequest<Result>
+    {
+        public string Description { get; set; }
+        public string Name { get; set; }
+        public string Category { get; set; }
+        public string Type { get; set; }
+        public string StartDate { get; set; }
+        public string EndDate { get; set; }
+        public string AttendeeCount { get; set; }
     }
     public class Handler : IRequestHandler<Command, Result>
     {
@@ -36,31 +36,31 @@ public class List
             {
                 input = request.Description;
                 if (!input.Equals("*"))
-                    selectedMeetings = selectedMeetings.GetMeetingsByDescription(input);
+                    selectedMeetings = selectedMeetings.FilterDescription(input);
 
                 input = request.Name;
                 if (!input.Equals("*"))
-                    selectedMeetings = selectedMeetings.GetMeetingsByResponsiblePerson(input);
+                    selectedMeetings = selectedMeetings.FilterResponsiblePerson(input);
 
                 input = request.Category;
                 if (!input.Equals("*"))
-                    selectedMeetings = selectedMeetings.GetMeetingByCategory(input);
+                    selectedMeetings = selectedMeetings.FilterCategory(input);
 
                 input = request.Type;
                 if (!input.Equals("*"))
-                    selectedMeetings = selectedMeetings.GetMeetingByType(input);
+                    selectedMeetings = selectedMeetings.FilterType(input);
 
                 input = request.StartDate;
                 if (!input.Equals("*"))
-                    selectedMeetings = selectedMeetings.GetMeetingByStartDate(input);
+                    selectedMeetings = selectedMeetings.FilterStartDate(input);
 
                 input = request.EndDate;
                 if (!input.Equals("*"))
-                    selectedMeetings = selectedMeetings.GetMeetingByEndDate(input);
+                    selectedMeetings = selectedMeetings.FilterEndDate(input);
 
                 input = request.AttendeeCount;
                 if (!input.Equals("*"))
-                    selectedMeetings = selectedMeetings.GetMeetingByAttendeesCount(input);
+                    selectedMeetings = selectedMeetings.FilterAttendeesCount(input);
             }
             catch (ArgumentException ex)
             {
@@ -74,3 +74,4 @@ public class List
         }
     }
 }
+
