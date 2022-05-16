@@ -4,7 +4,7 @@ namespace Application.Extensions;
 
 public static class MeetingListExtensions
 {
-    public static Meeting? GetByName(this List<Meeting> meetings, string name)
+    public static Meeting? GetByName(this IEnumerable<Meeting> meetings, string name)
     {
         Name validName;
         Meeting? meeting;
@@ -22,47 +22,7 @@ public static class MeetingListExtensions
         return meeting;
     }
 
-    public static List<Meeting> FilterDescription(this List<Meeting> meetings, string description)
-    {
-        return meetings.FindAll(meeting => meeting.Description.Value.Contains(description));
-    }
-
-    public static List<Meeting> FilterResponsiblePerson(this List<Meeting> meetings, string responsiblePersonName)
-    {
-        return meetings.FindAll(meeting => meeting.ResponsiblePerson.Username.Equals(responsiblePersonName));
-    }
-    public static List<Meeting> FilterCategory(this List<Meeting> meetings, string category)
-    {
-        return meetings.FindAll(meeting => meeting.Category.Equals(category));
-    }
-    public static List<Meeting> FilterType(this List<Meeting> meetings, string type)
-    {
-        return meetings.FindAll(meeting => meeting.Type.Equals(type));
-    }
-    public static List<Meeting> FilterStartDate(this List<Meeting> meetings, string startDate)
-    {
-        var validStartDate = startDate.TryParseToDateOnly();
-        if (!validStartDate.IsSuccess)
-            throw new ArgumentException("Wrong date format.");
-        return meetings.FindAll(meeting => DateOnly.FromDateTime(meeting.FromToDateTime.StartDate) >= validStartDate.Value);
-    }
-    public static List<Meeting> FilterEndDate(this List<Meeting> meetings, string endDate)
-    {
-        var validEndDate = endDate.TryParseToDateOnly();
-        if (!validEndDate.IsSuccess)
-            throw new ArgumentException("Wrong date format.");
-        return meetings.FindAll(meeting => DateOnly.FromDateTime(meeting.FromToDateTime.EndDate) <= validEndDate.Value);
-    }
-
-    public static List<Meeting> FilterAttendeesCount(this List<Meeting> meetings, string countStr)
-    {
-        int count;
-        if (Int32.TryParse(countStr, out count))
-            throw new ArgumentException("Can't parse non-number symbols.");
-        return meetings.FindAll(meeting => meeting.Attendees.Count == count);
-    }
-
-    public static void Print(this List<Meeting> meetings)
+    public static void Print(this IEnumerable<Meeting> meetings)
     {
         int count = 1;
         foreach (Meeting meeting in meetings)

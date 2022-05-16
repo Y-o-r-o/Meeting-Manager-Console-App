@@ -1,6 +1,7 @@
 using Application.Core;
 using Application.Helpers;
 using Application.Meetings;
+using Application.Meetings.Core;
 using Application.Models;
 
 namespace Managers;
@@ -11,6 +12,8 @@ public class MeetingManager : ManagerBase
 
     public Result CreateMeeting(Person creator)
     {
+
+
         Console.WriteLine("Enter meeting name: ");
         var name = BetterConsole.ReadLine();
         Console.WriteLine("Enter meeting description: ");
@@ -66,30 +69,26 @@ public class MeetingManager : ManagerBase
 
     public Result ListAllMeetings()
     {
-        Console.WriteLine("Type fragments from description to filter data. Or type * to select all.");
-        var description = BetterConsole.ReadLine();
-        Console.WriteLine("Type responsible person name to filter data. Or type * to select all.");
-        var name = BetterConsole.ReadLine();
-        Console.WriteLine("Type category to filter data. Or type * to select all.");
-        var category = BetterConsole.ReadLine();
-        Console.WriteLine("Type type to filter data. Or type * to select all.");
-        var type = BetterConsole.ReadLine();
-        Console.WriteLine("Type start date (yyyy/mm/dd) to filter data. Or type * to select all.");
-        var startDate = BetterConsole.ReadLine();
-        Console.WriteLine("Type end date (yyyy/mm/dd) to filter data. Or type * to select all.");
-        var endDate = BetterConsole.ReadLine();
-        Console.WriteLine("Type attendees count to filter data. Or type * to select all.");
-        var attendeeCount = BetterConsole.ReadLine();
+        List<FilterCriteria> criterias = new();
+
+        Console.WriteLine("Type fragments from description to filter data. //Or type * to select all.");
+        criterias.Add(new DescriptionFilterCriteria() { Input = BetterConsole.ReadLine() });
+        Console.WriteLine("Type responsible person name to filter data. //Or type * to select all.");
+        criterias.Add(new DescriptionFilterCriteria() { Input = BetterConsole.ReadLine() });
+        Console.WriteLine("Type category to filter data. //Or type * to select all.");
+        criterias.Add(new DescriptionFilterCriteria() { Input = BetterConsole.ReadLine() });
+        Console.WriteLine("Type type to filter data. //Or type * to select all.");
+        criterias.Add(new DescriptionFilterCriteria() { Input = BetterConsole.ReadLine() });
+        Console.WriteLine("Type start date (yyyy/mm/dd) to filter data. //Or type * to select all.");
+        criterias.Add(new DescriptionFilterCriteria() { Input = BetterConsole.ReadLine() });
+        Console.WriteLine("Type end date (yyyy/mm/dd) to filter data. //Or type * to select all.");
+        criterias.Add(new DescriptionFilterCriteria() { Input = BetterConsole.ReadLine() });
+        Console.WriteLine("Type attendees count to filter data. //Or type * to select all.");
+        criterias.Add(new DescriptionFilterCriteria() { Input = BetterConsole.ReadLine() });
 
         return Handle(new List.Command()
         {
-            Description = description,
-            Name = name,
-            Category = category,
-            Type = type,
-            StartDate = startDate,
-            EndDate = endDate,
-            AttendeeCount = attendeeCount
+            Criteries = criterias
         });
     }
 
